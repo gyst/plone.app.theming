@@ -18,6 +18,7 @@ from zope.interface import Interface
 from zope.interface import implementer
 import Globals
 import logging
+import collections
 
 # Disable theming of ZMI
 patch_zmi()
@@ -43,10 +44,12 @@ class _Cache(object):
 def getCache(settings):
     # We need a persistent object to hang a _v_ attribute off for caching.
 
-    registry = settings.__registry__
-    caches = getattr(registry, '_v_plone_app_theming_caches', None)
-    if caches is None:
-        caches = registry._v_plone_app_theming_caches = {}
+#    registry = settings.__registry__
+#    caches = getattr(registry, '_v_plone_app_theming_caches', None)
+#    if caches is None:
+#        caches = registry._v_plone_app_theming_caches = {}
+    
+    caches = {}
 
     key = getSite().absolute_url()
 
@@ -59,6 +62,7 @@ def getCache(settings):
 def invalidateCache(settings, event):
     """When our settings are changed, invalidate the cache on all zeo clients
     """
+    pass
     registry = settings.__registry__
     registry._p_changed = True
     if hasattr(registry, '_v_plone_app_theming_caches'):
@@ -84,6 +88,19 @@ class ThemeTransform(object):
 
         # Obtain settings. Do nothing if not found
         settings = self.getSettings()
+
+        _settings = dict(
+            enabled=True,
+            currentTheme=u'barceloneta',
+            rules=u'/++theme++barceloneta/rules.xml',
+            absolutePrefix=u'/++theme++barceloneta',
+            readNetwork=False,
+            hostnameBlacklist=[u'127.0.0.1'],
+            parameterExpressions={},
+            doctype='<!DOCTYPE html>'
+        )
+        settings = collections.namedtuple(
+            'Settings', _settings)(**_settings)
 
         if settings is None:
             return None

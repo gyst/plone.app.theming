@@ -373,6 +373,8 @@ def getCurrentTheme():
     if not settings.rules:
         return None
 
+    return u'barceloneta'
+    import pdb; pdb.set_trace()
     if settings.currentTheme:
         return settings.currentTheme
 
