@@ -366,17 +366,18 @@ def getZODBThemes():
     return themes
 
 
-def getCurrentTheme():
+def getCurrentTheme(switchable=True):
     """Get the name of the currently enabled theme
     """
     settings = getUtility(IRegistry).forInterface(IThemeSettings, False)
     if not settings.rules:
         return None
 
-    LOGGER.info("p.a.t.utils.getCurrentTheme: barceloneta")
-    return u'barceloneta'
-
-    LOGGER.info("p.a.t.utils.getCurrentTheme: %s", settings.currentTheme)
+    if switchable:
+        LOGGER.info("p.a.t.utils.getCurrentTheme: barceloneta")
+        return u'barceloneta'
+    else:
+        LOGGER.info("p.a.t.utils.getCurrentTheme: %s", settings.currentTheme)
 
 
 #    import pdb; pdb.set_trace()
@@ -439,7 +440,7 @@ def applyTheme(theme):
     plugins = None
     themeDirectory = None
     pluginSettings = None
-    currentTheme = getCurrentTheme()
+    currentTheme = getCurrentTheme(switchable=False)
 
     if currentTheme is not None:
         themeDirectory = queryResourceDirectory(
