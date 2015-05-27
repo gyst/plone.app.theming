@@ -48,7 +48,6 @@ def getCache(settings):
 #    caches = getattr(registry, '_v_plone_app_theming_caches', None)
 #    if caches is None:
 #        caches = registry._v_plone_app_theming_caches = {}
-    
     caches = {}
 
     key = getSite().absolute_url()
@@ -79,33 +78,24 @@ class ThemeTransform(object):
     order = 8850
 
     def __init__(self, published, request):
+        LOGGER.info("p.a.t.transform.ThemeTransform.__init__")
         self.published = published
         self.request = request
 
     def setupTransform(self, runtrace=False):
+        LOGGER.info("p.a.t. ThemeTransform.setupTransform")
+
         request = self.request
         DevelopmentMode = Globals.DevelopmentMode
 
         # Obtain settings. Do nothing if not found
         settings = self.getSettings()
 
-        _settings = dict(
-            enabled=True,
-            currentTheme=u'barceloneta',
-            rules=u'/++theme++barceloneta/rules.xml',
-            absolutePrefix=u'/++theme++barceloneta',
-            readNetwork=False,
-            hostnameBlacklist=[u'127.0.0.1'],
-            parameterExpressions={},
-            doctype='<!DOCTYPE html>'
-        )
-        settings = collections.namedtuple(
-            'Settings', _settings)(**_settings)
-
         if settings is None:
             return None
 
         if not isThemeEnabled(request, settings):
+            LOGGER.error("theme not enabled")
             return None
 
         cache = getCache(settings)
@@ -138,6 +128,21 @@ class ThemeTransform(object):
         return transform
 
     def getSettings(self):
+        LOGGER.info("p.a.t.transform.ThemeTransform.getSettings")
+        _settings = dict(
+            enabled=True,
+            currentTheme=u'barceloneta',
+            rules=u'/++theme++barceloneta/rules.xml',
+            absolutePrefix=u'/++theme++barceloneta',
+            readNetwork=False,
+            hostnameBlacklist=[u'127.0.0.1'],
+            parameterExpressions={},
+            doctype='<!DOCTYPE html>'
+        )
+        settings = collections.namedtuple(
+            'Settings', _settings)(**_settings)
+        return settings
+
         registry = queryUtility(IRegistry)
         if registry is None:
             return None
@@ -173,6 +178,7 @@ class ThemeTransform(object):
     def transformIterable(self, result, encoding):
         """Apply the transform if required
         """
+        LOGGER.info("p.a.t.transform.ThemeTransform.transformIterable")
         # Obtain settings. Do nothing if not found
         settings = self.getSettings()
         if settings is None:
