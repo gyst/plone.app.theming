@@ -380,7 +380,6 @@ def getCurrentTheme(switchable=True):
         LOGGER.info("p.a.t.utils.getCurrentTheme: %s", settings.currentTheme)
 
 
-#    import pdb; pdb.set_trace()
     if settings.currentTheme:
         return settings.currentTheme
 
@@ -434,13 +433,14 @@ def isThemeEnabled(request, settings=None):
 def applyTheme(theme):
     """Apply an ITheme
     """
+    LOGGER.info("applyTheme")
 
     settings = getUtility(IRegistry).forInterface(IThemeSettings, False)
 
     plugins = None
     themeDirectory = None
     pluginSettings = None
-    currentTheme = getCurrentTheme(switchable=False)
+    currentTheme = getCurrentTheme(switchable=False)  # install stage
 
     if currentTheme is not None:
         themeDirectory = queryResourceDirectory(
